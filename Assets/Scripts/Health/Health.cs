@@ -4,16 +4,26 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
+    [Header ("Health")]
     [SerializeField] private float startingHealth;
     public float currentHealth { get; private set; }
 
     private Animator anim;
+    private bool isDead;
+
+    [Header("iFrames")]
+    [SerializeField] private float iFramesDuration;
+    [SerializeField] private int noOfFlashes;
+    private SpriteRenderer spriteRenderer;
 
     private void Awake()
     {
         currentHealth = startingHealth;
-        anim = GetComponent<Animator>();    
+        anim = GetComponent<Animator>(); 
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
+
+    
 
     public void TakeDamage(float _damage) { 
     
@@ -23,14 +33,24 @@ public class Health : MonoBehaviour
         {
             //hurt
             anim.SetTrigger("hurt");
+            StartCoroutine(Invunerability());
+
         }
         else {
             //die
-            anim.SetTrigger("die");
-            GetComponent<MovementScript>().enabled = false;
-
+            
+                Die();       
         }
    
+    }
+
+    public void Die() { 
+    if (!isDead)
+        {
+            anim.SetTrigger("die");
+            GetComponent<MovementScript>().enabled = false;
+            isDead = true;
+        }
     }
 
     private void Update()
@@ -40,5 +60,18 @@ public class Health : MonoBehaviour
             TakeDamage(1);
         }
         
+    }
+
+   private IEnumerator Invunerability() {
+        Physics2D.IgnoreLayerCollision(10, 11, ignore: true);
+        for (int i = 0; i < noOfFlashes; i++)
+        {
+            spriteRenderer.color = new Color(1, 0, 0, 0.5f);
+            yield return new WaitForSeconds(iFramesDuration / (noOfFlashes*2 ));
+            spriteRenderer.color = Color.white;
+            yield return new WaitForSeconds(iFramesDuration / (noOfFlashes * 2));
+        }
+        Physics2D.IgnoreLayerCollision(10, 11, ignore: false);
+
     }
 }
