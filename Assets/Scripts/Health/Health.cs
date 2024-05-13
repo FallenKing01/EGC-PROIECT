@@ -14,6 +14,8 @@ public class Health : MonoBehaviour
     [Header("iFrames")]
     [SerializeField] private float iFramesDuration;
     [SerializeField] private int noOfFlashes;
+
+    [SerializeField] private Behaviour[] components;
     private SpriteRenderer spriteRenderer;
 
     private void Awake()
@@ -48,7 +50,12 @@ public class Health : MonoBehaviour
     if (!isDead)
         {
             anim.SetTrigger("die");
-            GetComponent<MovementScript>().enabled = false;
+           
+            foreach (Behaviour behaviour in components)
+            {
+                behaviour.enabled = false;
+            }
+
             isDead = true;
         }
     }

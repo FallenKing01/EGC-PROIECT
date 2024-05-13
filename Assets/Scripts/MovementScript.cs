@@ -19,7 +19,8 @@ public class MovementScript : MonoBehaviour
     }
 
     private void Update()
-    { float horizontalInput = Input.GetAxis("Horizontal");
+    { 
+        float horizontalInput = Input.GetAxis("Horizontal");
         body.velocity = new Vector2(horizontalInput * speed,body.velocity.y);
 
         //flip player (-0.5 for first cuz image is fliped)
@@ -49,5 +50,10 @@ public class MovementScript : MonoBehaviour
         {
             grounded = true;
         }
+    }
+
+    public bool canAttack() {
+
+        return grounded && Input.GetAxis("Horizontal") == 0;
     }
 }

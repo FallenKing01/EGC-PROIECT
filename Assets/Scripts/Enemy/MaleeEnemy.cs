@@ -12,25 +12,32 @@ public class Malee : MonoBehaviour
     [SerializeField] private BoxCollider2D boxCollider2D;
     [SerializeField] private LayerMask playerLayer;
 
-
+    private EnemyPatrol enemyPatrol;
     private Animator anim;
     private Health playerHealth;
 
     private void Awake()
     {
+        enemyPatrol = GetComponentInParent<EnemyPatrol>();
         anim = GetComponent<Animator>();
     }
     private void Update()
     {
         cooldownTimer += Time.deltaTime;
+        if (enemyPatrol != null)
+        {
+            enemyPatrol.enabled = !PlayerInSight();
+        }
         if (PlayerInSight()) {
             if (cooldownTimer >= attackCooldown)
             {
                 cooldownTimer = 0;
-                anim.SetTrigger("rangeAttack");
+         
+                anim.SetTrigger("maleeAttack");
 
             }
         }
+        
         
 
     }
